@@ -1,0 +1,8 @@
+git init [from folder where pom file is present]
+git remote add origin https://github.com/vikas-git-6816/jwt.git
+git pull origin master
+git add -A
+git commit -m "Initial Commit"
+git push origin master
+
+
