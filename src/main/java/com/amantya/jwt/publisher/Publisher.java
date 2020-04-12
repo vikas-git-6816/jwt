@@ -1,8 +1,8 @@
-package com.amantya.jwt.publisher.model;
+package com.amantya.jwt.publisher;
 
 public class Publisher {
 
-    private String ID ;
+    private Integer ID ;
     private String name ;
     private String email ;
     private String phoneNumber ;
@@ -10,18 +10,18 @@ public class Publisher {
     public Publisher() {
     }
 
-    public Publisher(String ID, String name, String email, String phoneNumber) {
+    public Publisher(Integer ID, String name, String email, String phoneNumber) {
         this.ID = ID;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
 
-    public String getID() {
+    public Integer getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(Integer ID) {
         this.ID = ID;
     }
 
