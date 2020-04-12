@@ -1,10 +1,20 @@
 package com.amantya.jwt.publisher;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class Publisher {
 
     private Integer ID ;
+
+    @Size(min = 1 , max = 50, message = "Publisher Name should be between 1 and 50 characters.")
     private String name ;
+
+    @Email(message = "Please enter a valid email ID.")
     private String email ;
+
+    @Pattern(regexp = "\\d{3}-\\d{3}-\\d{3}", message = "Please enter phone number in XXX-XXX-XXX format.")
     private String phoneNumber ;
 
     public Publisher() {
