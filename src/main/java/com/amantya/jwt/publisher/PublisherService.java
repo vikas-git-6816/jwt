@@ -1,8 +1,11 @@
 package com.amantya.jwt.publisher;
 
 import com.amantya.jwt.Exception.LibraryResourceAlreadyExistsException;
+import com.amantya.jwt.Exception.LibraryResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class PublisherService {
@@ -13,7 +16,7 @@ public class PublisherService {
         this.publisherRepository = publisherRepository;
     }
 
-    public Publisher addPublisher(Publisher publisherToBeAdded)
+    public void addPublisher(Publisher publisherToBeAdded)
             throws LibraryResourceAlreadyExistsException {
 
         PublisherEntity publisherEntity = new PublisherEntity(
@@ -31,6 +34,21 @@ public class PublisherService {
         }
 
         publisherToBeAdded.setID(addedPublisher.getPublisherID());
-        return publisherToBeAdded;
+
+    }
+
+    public Publisher getPublisher(Integer publisherID) throws LibraryResourceNotFoundException {
+        Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherID) ;
+        Publisher publisher = null ;
+        if(publisherEntity.isPresent()) {
+            publisher = createPublisherFromPublisherEntity(publisherEntity.get());
+        }else {
+            throw new LibraryResourceNotFoundException("Publisher with id " + publisherID + " not found.") ;
+        }
+        return publisher ;
+    }
+
+    private Publisher createPublisherFromPublisherEntity(PublisherEntity pe) {
+        return new Publisher(pe.getPublisherID(),pe.getName(),pe.getEmail(),pe.getPhoneNumber());
     }
 }
