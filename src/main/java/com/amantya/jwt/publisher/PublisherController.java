@@ -3,6 +3,7 @@ package com.amantya.jwt.publisher;
 import com.amantya.jwt.Exception.LibraryResourceAlreadyExistsException;
 import com.amantya.jwt.Exception.LibraryResourceNotFoundException;
 import com.amantya.jwt.publisher.Publisher;
+import com.amantya.jwt.utils.LibraryApiUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +51,16 @@ public class PublisherController {
             return  new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND) ;
         }
         return  new ResponseEntity<>(HttpStatus.ACCEPTED) ;
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<?> searchPublisher(@RequestParam String name)
+    {
+        if(LibraryApiUtils.isEmptyString(name)) {
+            return new ResponseEntity<>("Please enter a name to search publishers.", HttpStatus.BAD_REQUEST);
+        }
+
+
+        return  new ResponseEntity<>(publisherService.searchPublisher(name), HttpStatus.OK) ;
     }
 }
