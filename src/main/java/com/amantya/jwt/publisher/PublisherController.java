@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -37,7 +38,7 @@ public class PublisherController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addPublisher(@RequestBody Publisher publisher,
+    public ResponseEntity<?> addPublisher(@Valid @RequestBody Publisher publisher,
                                           @RequestHeader(value = "Trace-ID", defaultValue = "") String traceID)
     {
         if(LibraryApiUtils.isEmptyString(traceID)){
