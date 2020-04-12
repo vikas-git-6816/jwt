@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping(path = "/v1/publishers")
 public class PublisherController {
@@ -19,11 +21,15 @@ public class PublisherController {
     }
 
     @GetMapping(path = "/{publisherID}")
-    public ResponseEntity<?> getPublisher(@PathVariable Integer publisherID)
+    public ResponseEntity<?> getPublisher(@PathVariable Integer publisherID,
+                                          @RequestHeader(value = "Trace-ID", defaultValue = "") String traceID)
     {
+        if(LibraryApiUtils.isEmptyString(traceID)){
+            traceID = UUID.randomUUID().toString();
+        }
         Publisher publisher = null ;
         try {
-           publisher = publisherService.getPublisher(publisherID);
+           publisher = publisherService.getPublisher(publisherID,traceID);
         }catch (LibraryResourceNotFoundException e){
             return  new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND) ;
         }
@@ -31,10 +37,15 @@ public class PublisherController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addPublisher(@RequestBody Publisher publisher)
+    public ResponseEntity<?> addPublisher(@RequestBody Publisher publisher,
+                                          @RequestHeader(value = "Trace-ID", defaultValue = "") String traceID)
     {
+        if(LibraryApiUtils.isEmptyString(traceID)){
+            traceID = UUID.randomUUID().toString();
+        }
+
         try {
-             publisherService.addPublisher(publisher);
+             publisherService.addPublisher(publisher,traceID);
         } catch (LibraryResourceAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
@@ -42,11 +53,15 @@ public class PublisherController {
     }
 
     @DeleteMapping(path = "/{publisherID}")
-    public ResponseEntity<?> deletePublisher(@PathVariable Integer publisherID)
+    public ResponseEntity<?> deletePublisher(@PathVariable Integer publisherID,
+                                             @RequestHeader(value = "Trace-ID", defaultValue = "") String traceID)
     {
+        if(LibraryApiUtils.isEmptyString(traceID)){
+            traceID = UUID.randomUUID().toString();
+        }
 
         try {
-            publisherService.deletePublisher(publisherID);
+            publisherService.deletePublisher(publisherID,traceID);
         }catch (LibraryResourceNotFoundException e){
             return  new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND) ;
         }
@@ -54,13 +69,17 @@ public class PublisherController {
     }
 
     @GetMapping(path = "/search")
-    public ResponseEntity<?> searchPublisher(@RequestParam String name)
+    public ResponseEntity<?> searchPublisher(@RequestParam String name,
+                                             @RequestHeader(value = "Trace-ID", defaultValue = "") String traceID)
     {
+        if(LibraryApiUtils.isEmptyString(traceID)){
+            traceID = UUID.randomUUID().toString();
+        }
+
         if(LibraryApiUtils.isEmptyString(name)) {
             return new ResponseEntity<>("Please enter a name to search publishers.", HttpStatus.BAD_REQUEST);
         }
 
-
-        return  new ResponseEntity<>(publisherService.searchPublisher(name), HttpStatus.OK) ;
+        return  new ResponseEntity<>(publisherService.searchPublisher(name,traceID), HttpStatus.OK) ;
     }
 }
