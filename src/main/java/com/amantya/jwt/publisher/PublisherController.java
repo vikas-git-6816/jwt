@@ -39,4 +39,16 @@ public class PublisherController {
         }
         return new ResponseEntity<>(publisher,HttpStatus.CREATED);
     }
+
+    @DeleteMapping(path = "/{publisherID}")
+    public ResponseEntity<?> deletePublisher(@PathVariable Integer publisherID)
+    {
+
+        try {
+            publisherService.deletePublisher(publisherID);
+        }catch (LibraryResourceNotFoundException e){
+            return  new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND) ;
+        }
+        return  new ResponseEntity<>(HttpStatus.ACCEPTED) ;
+    }
 }

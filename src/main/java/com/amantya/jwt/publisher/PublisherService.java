@@ -3,6 +3,7 @@ package com.amantya.jwt.publisher;
 import com.amantya.jwt.Exception.LibraryResourceAlreadyExistsException;
 import com.amantya.jwt.Exception.LibraryResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -50,5 +51,16 @@ public class PublisherService {
 
     private Publisher createPublisherFromPublisherEntity(PublisherEntity pe) {
         return new Publisher(pe.getPublisherID(),pe.getName(),pe.getEmail(),pe.getPhoneNumber());
+    }
+
+    public void deletePublisher(Integer publisherID) throws LibraryResourceNotFoundException {
+
+        try {
+            publisherRepository.deleteById(publisherID);
+        } catch ( EmptyResultDataAccessException e) {
+            throw new LibraryResourceNotFoundException("Publisher ID : " +publisherID + " not found") ;
+        }
+
+
     }
 }
