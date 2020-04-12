@@ -21,7 +21,7 @@ public class PublisherService {
         this.publisherRepository = publisherRepository;
     }
 
-    public void addPublisher(Publisher publisherToBeAdded)
+    public void addPublisher(Publisher publisherToBeAdded, String traceID)
             throws LibraryResourceAlreadyExistsException {
 
         PublisherEntity publisherEntity = new PublisherEntity(
@@ -35,40 +35,36 @@ public class PublisherService {
         try {
             addedPublisher = publisherRepository.save(publisherEntity);
         } catch ( DataIntegrityViolationException e) {
-            throw new LibraryResourceAlreadyExistsException("Publisher already exist.") ;
+            throw new LibraryResourceAlreadyExistsException("Trace-ID - "+traceID+" | Publisher already exist.") ;
         }
 
         publisherToBeAdded.setID(addedPublisher.getPublisherID());
 
     }
 
-    public Publisher getPublisher(Integer publisherID) throws LibraryResourceNotFoundException {
+    public Publisher getPublisher(Integer publisherID, String traceID) throws LibraryResourceNotFoundException {
         Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherID) ;
         Publisher publisher = null ;
         if(publisherEntity.isPresent()) {
             publisher = createPublisherFromPublisherEntity(publisherEntity.get());
         }else {
-            throw new LibraryResourceNotFoundException("Publisher with id " + publisherID + " not found.") ;
+            throw new LibraryResourceNotFoundException("Trace-ID - "+traceID+" | Publisher with id " + publisherID + " not found.") ;
         }
         return publisher ;
     }
 
-    private Publisher createPublisherFromPublisherEntity(PublisherEntity pe) {
-        return new Publisher(pe.getPublisherID(),pe.getName(),pe.getEmail(),pe.getPhoneNumber());
-    }
-
-    public void deletePublisher(Integer publisherID) throws LibraryResourceNotFoundException {
+    public void deletePublisher(Integer publisherID, String traceID) throws LibraryResourceNotFoundException {
 
         try {
             publisherRepository.deleteById(publisherID);
         } catch ( EmptyResultDataAccessException e) {
-            throw new LibraryResourceNotFoundException("Publisher ID : " +publisherID + " not found") ;
+            throw new LibraryResourceNotFoundException("Trace-ID - "+traceID+" | Publisher ID : " +publisherID + " not found") ;
         }
 
 
     }
 
-    public List<Publisher> searchPublisher(String name) {
+    public List<Publisher> searchPublisher(String s, String name) {
 
         List<PublisherEntity> publisherEntityList = Collections.emptyList() ;
         List<Publisher> publisherList = Collections.emptyList() ;
@@ -82,5 +78,9 @@ public class PublisherService {
             }
         }
         return publisherList;
+    }
+
+    private Publisher createPublisherFromPublisherEntity(PublisherEntity pe) {
+        return new Publisher(pe.getPublisherID(),pe.getName(),pe.getEmail(),pe.getPhoneNumber());
     }
 }
